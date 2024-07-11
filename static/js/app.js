@@ -7,7 +7,7 @@ function buildMetadata(sample) {
 
     // Filter the metadata for the object with the desired sample number
     // ChatGPT was used to identify '== sample'
-    let filteredMetadata = metadata.filter(obj => obj.id == sample);
+    let filteredMetadata = metadata.filter(obj => obj.id === sample)[0];
 
     // Use d3 to select the panel with id of `#sample-metadata`
     let panel = d3.select("#sample-metadata");
@@ -31,12 +31,12 @@ function buildCharts(sample) {
     let samples = data.samples
 
     // Filter the samples for the object with the desired sample number
-    let fileteredSamples = samples.filter(obj => obj.id == sample)
+    let fileteredSamples = samples.filter(obj => obj.id === sample)[0];
 
     // Get the otu_ids, otu_labels, and sample_values
-    let otu_ids = sampleData.otu_ids;
-    let otu_labels = sampleData.otu_labels;
-    let sample_values = sampleData.sample_values;
+    let otu_ids = filteredSamples.otu_ids;
+    let otu_labels = filteredSamples.otu_labels;
+    let sample_values = filteredSamples.sample_values;
 
     // Build a Bubble Chart
 
