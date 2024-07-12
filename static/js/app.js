@@ -3,12 +3,10 @@ function buildMetadata(sample) {
   d3.json("https://static.bc-edx.com/data/dl-1-2/m14/lms/starter/samples.json").then((data) => {
 
     // get the metadata field
-    let metadata = data.metadata;
-    console.log("Metadata:", metadata);
-
+    
     // Filter the metadata for the object with the desired sample number
-    // ChatGPT was used to identify '=== sample'
-    let filteredMetadata = metadata.filter(obj => obj.id == sample);
+    let filteredMetadata = data.metadata.filter(item => item.id == sample);
+    filteredMetadata = filteredMetadata[0];
     
 
     // Use d3 to select the panel with id of `#sample-metadata`
@@ -16,7 +14,7 @@ function buildMetadata(sample) {
     console.log("Panel:", panel);
 
     // Use `.html("") to clear any existing metadata
-    panel.html("")
+    panel.html("");
 
     // Inside a loop, you will need to use d3 to append new
     // tags for each key-value in the filtered metadata.
@@ -33,11 +31,10 @@ function buildCharts(sample) {
   d3.json("https://static.bc-edx.com/data/dl-1-2/m14/lms/starter/samples.json").then((data) => {
 
     // Get the samples field
-    let samples = data.samples;
-    console.log("Samples data:", samples);
 
     // Filter the samples for the object with the desired sample number
-    let filteredSamples = samples.filter(obj => obj.id === sample)[0];
+    let filteredSamples = data.samples.filter(item => item.id == sample);
+    filteredSamples = filteredSamples[0];
     console.log("Filtered samples:", filteredSamples);
 
     // Get the otu_ids, otu_labels, and sample_values
@@ -58,7 +55,7 @@ function buildCharts(sample) {
       marker: {
         size: sample_values,
         color: otu_ids,
-        opacity: 0.5
+        colorscale: "Earth"
       }
     };
     
@@ -114,19 +111,22 @@ function init() {
   d3.json("https://static.bc-edx.com/data/dl-1-2/m14/lms/starter/samples.json").then((data) => {
 
     // Get the names field
-    let names = data.names;
-    // sampleNames = data.names
+    let sampleNames = data.names
 
     // Use d3 to select the dropdown with id of `#selDataset`
-    // let dropdown = d3.select("#selDataset");
+    let dropdown = d3.select("#selDataset");
 
     // Use the list of sample names to populate the select options
     // Hint: Inside a loop, you will need to use d3 to append a new
     // option for each sample name.
-
+    sampleNames.forEach((sample) => {
+      dropdown.append("option")
+              .text(sample)
+              .property("value", sample);
+    });
 
     // Get the first sample from the list
-    samples = names[0]
+    let samples = sampleNames[0]
 
     // Build charts and metadata panel with the first sample
     buildMetadata(samples)
@@ -137,7 +137,8 @@ function init() {
 // Function for event listener
 function optionChanged(newSample) {
   // Build charts and metadata panel each time a new sample is selected
-
+  buildMetadata(newSample)
+  buildCharts(newSample)
 }
 
 // Initialize the dashboard
